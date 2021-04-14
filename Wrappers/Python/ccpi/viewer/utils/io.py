@@ -413,6 +413,7 @@ def loadTif(*args, **kwargs):
     filenames, reader, output_image = args
     image_info = kwargs.get('image_info', None)
     convert_numpy = kwargs.get('convert_numpy', False)
+    progress_callback = kwargs.get('progress_callback')
 
     # time.sleep(0.1) #required so that progress window displays
     # progress_callback.emit(10)
