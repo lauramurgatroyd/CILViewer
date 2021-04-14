@@ -194,6 +194,7 @@ def loadMetaImage(**kwargs):
     convert_raw = kwargs.get('convert_raw', True)
     tempfolder = kwargs.get('tempfolder', None)
     progress_callback = kwargs.get('progress_callback', None)
+
     if resample:
         reader = cilMetaImageResampleReader()
         #print("Target size: ", int(target_size * 1024*1024*1024))
@@ -627,8 +628,8 @@ def createRawImportDialog(main_window, fname, output_image, info_var, resample, 
 def createConvertRawImageWorker(main_window, fname, output_image, info_var, resample, target_size, crop_image, origin, target_z_extent, finish_fn):
     createProgressWindow(main_window, "Converting", "Converting Image")
     main_window.progress_window.setValue(10)
-    image_worker = Worker(saveRawImageData, main_window, fname, output_image,
-                          info_var, resample, target_size, crop_image, origin, target_z_extent)
+    image_worker = Worker(saveRawImageData, main_window=main_window, fname=fname, output_image=output_image,
+                          info_var=info_var, resample=resample, target_size=target_size, crop_image=crop_image, origin=origin, target_z_extent=target_z_extent)
     image_worker.signals.progress.connect(
         partial(progress, main_window.progress_window))
     image_worker.signals.result.connect(
@@ -697,7 +698,18 @@ def generateUIFormView():
             'groupBoxFormLayout': groupBoxFormLayout}
 
 
-def saveRawImageData(main_window, fname, output_image, info_var, resample, target_size, crop_image, origin, target_z_extent, progress_callback):
+# def saveRawImageData(main_window, fname, output_image, info_var, resample, target_size, crop_image, origin, target_z_extent, progress_callback):
+def saveRawImageData(**kwargs):
+    main_window = kwargs.get('main_window')
+    fname = kwargs.get('fname')
+    output_image = kwargs.get('output_image')
+    info_var = kwargs.get('info_var', None)
+    resample = kwargs.get('resample', False)
+    target_size = kwargs.get('target_size', 0.125)
+    crop_image = kwargs.get('crop_image', False)
+    origin = kwargs.get('origin', (0, 0, 0))
+    target_z_extent = kwargs.get('target_z_extent', (0, 0))
+    progress_callback = kwargs.get('progress_callback', None)
     errors = {}
     #print ("File Name", fname)
 
